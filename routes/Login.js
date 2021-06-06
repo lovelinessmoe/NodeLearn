@@ -9,12 +9,15 @@ router.post('/', function (req, res, next) {
     let password = req.body.password;
     let sql = ""
     try {
-        sql = "select a_id,a_name,login_name,`desc`,type,t_id from account where login_name = ? && a_pwd = ? limit 1"
+        sql = "select a_id,a_name,login_name,`desc`,type,t_id,a_pwd from account where login_name = ? && a_pwd = ? limit 1"
         let query = connection.query(sql, [username, password],
             function (err, rs) {
                 if (rs.length < 1) {
                     return res.send("用户名或密码错误");
                 }
+                console.log(rs[0].a_pwd + "123");
+                req.session.PWD = rs[0].a_pwd;
+                console.log(req.session.PWD);
                 if (rs[0].type === 1) {
 // TODO
                 } else if (rs[0].type === 2) {

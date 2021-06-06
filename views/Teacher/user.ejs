@@ -18,363 +18,245 @@
     <link href="/Css/tipso.min.css" rel="stylesheet">
     <link href="/Css/zoc_self.css" rel="stylesheet" type="text/css">
     <link href="/Css/bootstrap.min.self.css" rel="stylesheet" media="screen">
-    <script type="text/javascript">
-        var USER_UPDATE_INFO_URL = "/z-os/self/user/update_info";
-        var USER_UPDATE_PWD_URL = "/z-os/self/user/update_pwd";
-        var USER_UNBIND_URL = "/z-os/self/user/unbind";
-        var USER_FORM_URL = "/z-os/self/user/findPageInfo";
-        var CHANGE_NICKNAME_URL = "/z-os/self/user/changeNickName";
-        var formURL2;
-        var nowdate = new Date(1622622741669);
-        var USER_OPERATOR_INFO = "/z-os/self/user/findUserOperatorInfo";
-        var DO_USER_UN_BIND = "/z-os/self/do/unBindOperator";
-        var DO_USER_BIND_INFO = "/z-os/self/do/userBindOperator";
-        var USER_UPDATE_OP_INFO_URL = "/z-os/self/user/update/operator";
-        var USER_OPERATOR_STOP = "/z-os/self/user/operator/stop";
-        var USER_OPERATOR_NORMAL = "/z-os/self/user/operator/normal";
-        var GET_PASSWORD_RULE_TIP = "/z-os/user/passwordRule";
-    </script>
     <link href="/Css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/layui-v2.6.8/layui/css/layui.css" type="text/css" rel="stylesheet">
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#Teacher_User").addClass("menu_hov");
         });
     </script>
-    <script src="/Js/self_user.js"></script>
-    <script src="/Js/set_password_rule_tip.js"></script>
-    <script src="/Js/uploadPreview.js"></script>
+    <!--    <script src="/Js/self_user.js"></script>-->
 </head>
 <div id="screen-shader"
      style="            transition: opacity 0.1s ease 0s;             z-index: 2147483647;            margin: 0;             border-radius: 0;             padding: 0;             background: #939393 !important;             pointer-events: none;             position: fixed;             top: -10%;             right: -10%;             width: 120%;             height: 120%;             opacity: 0.6000;            mix-blend-mode: multiply;             display: none;        "></div>
 <body style="">
-<form id="userForm" name="userForm" action="/user" method="post">
-    <style>
-        <!--
-        .top_menu_pc {
-            float: right;
-        }
+<style>
+    <!--
+    .top_menu_pc {
+        float: right;
+    }
 
-        .top_menu_pc ul li {
-            float: left;
-            text-align: center;
-        }
+    .top_menu_pc ul li {
+        float: left;
+        text-align: center;
+    }
 
-        .top_menu_pc ul li a {
-            height: 80px;
-            display: block;
-            color: #555;
-            font-size: 14px;
-            width: 90px;
-            text-decoration: none;
-        }
+    .top_menu_pc ul li a {
+        height: 80px;
+        display: block;
+        color: #555;
+        font-size: 14px;
+        width: 90px;
+        text-decoration: none;
+    }
 
-        .top_menu_pc ul li a:hover, .menu_hov a {
-        }
+    .top_menu_pc ul li a:hover, .menu_hov a {
+    }
 
-        .menu_znms {
-            font-size: 0;
-        }
+    .menu_znms {
+        font-size: 0;
+    }
 
-        .menu_znms li {
-            position: relative;
-            display: inline-block;
-            *display: inline;
-            *zoom: 1;
-            font-size: 14px;
-        }
+    .menu_znms li {
+        position: relative;
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+        font-size: 14px;
+    }
 
-        .menu_znms > li {
-            margin: 0 0 0 -1px;
-            text-align: center;
-        }
+    .menu_znms > li {
+        margin: 0 0 0 -1px;
+        text-align: center;
+    }
 
-        .menu_znms li a {
-            display: block;
-            color: #fff;
-            font-size: 14px;
-            *display: inline;
-            *zoom: 1;
-        }
+    .menu_znms li a {
+        display: block;
+        color: #fff;
+        font-size: 14px;
+        *display: inline;
+        *zoom: 1;
+    }
 
-        .menu_znms li a:hover, .menu_znms .menu_hov {
+    .menu_znms li a:hover, .menu_znms .menu_hov {
 
-        }
+    }
 
-        .menu_znms li ul {
-            text-align: left;
-            position: absolute;
-            border-bottom: 0px solid #189;
-            color: #189 !important;
-        }
+    .menu_znms li ul {
+        text-align: left;
+        position: absolute;
+        border-bottom: 0px solid #189;
+        color: #189 !important;
+    }
 
-        .menu_znms_ie7 {
-            *top: 50px;
-            *left: 0;
-        }
+    .menu_znms_ie7 {
+        *top: 50px;
+        *left: 0;
+    }
 
-        .menu_znms li ul li {
-            width: 90px;
-            height: 35px;
-            line-height: 35px;
-            display: block;
-            border-bottom: 0px solid #189;
-        }
+    .menu_znms li ul li {
+        width: 90px;
+        height: 35px;
+        line-height: 35px;
+        display: block;
+        border-bottom: 0px solid #189;
+    }
 
-        .menu_znms li ul li a {
-            display: block;
-        }
+    .menu_znms li ul li a {
+        display: block;
+    }
 
-        .menu_znms li ul li a:hover {
-            /* border-bottom: 5px solid #189 !important;
-            color: #189 !important;  */
-        }
+    .menu_znms li ul li a:hover {
+        /* border-bottom: 5px solid #189 !important;
+        color: #189 !important;  */
+    }
 
-        .menu_znms li ul li ul {
-            margin: 1px 0 0 0;
-        }
+    .menu_znms li ul li ul {
+        margin: 1px 0 0 0;
+    }
 
-        .menu_znms li ul li ul li a {
-            display: block;
-        }
+    .menu_znms li ul li ul li a {
+        display: block;
+    }
 
-        .height_pc {
-            height: 35px !important;
-        }
+    .height_pc {
+        height: 35px !important;
+    }
 
-        -->
-    </style>
+    -->
+</style>
 
-    <%- include('./Head.html'); %>
+<%- include('./Head.ejs'); %>
 
-
-    <div class="mod_box" style="padding-top: 0px;">
-        <ul class="menuself_mod_box" id="all_info_li">
-            <li id="user_basic_info_li" class="menuself_mod_hov">
-                <a href="javascript:void(0)">个人信息设置</a>
-            </li>
-
-            <li id="user_terminal_binding_info_li">
-                <a href="javascript:void(0)">终端绑定信息</a>
-            </li>
-            <li id="user_mac_info_li">
-                <a href="javascript:void(0)">MAC绑定信息</a>
-            </li>
-
-            <li id="user_password_info_li">
-                <a href="javascript:void(0)">修改密码</a>
-            </li>
-
+<div class="mod_box" style="padding-top: 0px;">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">个人信息设置</li>
+            <li>修改密码</li>
         </ul>
-
-        <!--用户信息-->
-        <div id="user_basic_info">
-            <table class="repair_self" border="0" cellspacing="0" cellpadding="0">
-                <tbody>
-                <tr>
-                    <td class="right_txt_self">
-                        <label>邮箱：</label>
-                    </td>
-                    <td>
-                        <input id="email" name="email" class="repair_input" type="text" value="1695560542@qq.com"
-                               size="25" maxlength="32">
-                    </td>
-                    <td class="right_txt_self">
-                        <label>证件类型 ：</label>
-                    </td>
-                    <td>
-                        <select id="certificateType" name="certificateType" class="repair_input" disabled="disabled"
-                                style="background-color: rgb(238, 238, 238);">
-                            <option value="0">其他</option>
-                            <option value="1" selected="selected">身份证</option>
-                            <option value="2">学生证</option>
-                            <option value="3">军官证</option>
-                            <option value="4">护照</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="right_txt_self">
-                        <label>证件号码：</label>
-                    </td>
-                    <td>
-                        <input id="certificateNo" name="certificateNo" class="repair_input" type="text"
-                               value="150426200109290019" size="25" maxlength="32" readonly="readonly"
-                               style="background-color: rgb(238, 238, 238);">
-                    </td>
-                    <td class="right_txt_self"><label>文化程度：</label></td>
-                    <td>
-                        <select id="educationLevel" name="educationLevel" class="repair_input" disabled="disabled"
-                                style="background-color: rgb(238, 238, 238);">
-                            <option value="0">其他</option>
-                            <option value="1">小学</option>
-                            <option value="2">初中</option>
-                            <option value="3">高中</option>
-                            <option value="4">专科</option>
-                            <option value="5">本科</option>
-                            <option value="6">硕士</option>
-                            <option value="7">博士</option>
-                            <option value="8">博士后</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="right_txt_self">
-                        <label>邮编：</label>
-                    </td>
-                    <td>
-                        <input id="zipCode" name="zipCode" class="repair_input" type="text" value="" size="25"
-                               maxlength="12" readonly="readonly" style="background-color: rgb(238, 238, 238);">
-                    </td>
-                    <td class="right_txt_self">
-                        <label>性别：</label>
-                    </td>
-                    <td>
-                        <select id="sex" name="sex" class="repair_input" disabled="disabled"
-                                style="background-color: rgb(238, 238, 238);">
-                            <option value="-1">请选择</option>
-                            <option value="1" selected="selected">男</option>
-                            <option value="2">女</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="right_txt_self">
-                        <label>移动电话：</label>
-                    </td>
-                    <td>
-                        <input id="mobile" name="mobile" class="repair_input" type="text" value="" size="25"
-                               maxlength="11">
-                    </td>
-                    <td class="right_txt_self"><label>住址：</label></td>
-                    <td><input id="address" name="address" class="repair_input" type="text" value="" size="40"
-                               maxlength="125" readonly="readonly" style="background-color: rgb(238, 238, 238);"></td>
-                </tr>
-                <tr>
-                    <td class="right_txt_self">
-                        <label>电话号码：</label>
-                    </td>
-                    <td><input id="phone" name="phone" class="repair_input" type="text" value="" size="25"
-                               maxlength="16" readonly="readonly" style="background-color: rgb(238, 238, 238);"></td>
-                    <td class="right_txt_self">
-                        <label>用户姓名 ：</label>
-                    </td>
-                    <td><input id="realName" name="realName" class="repair_input" type="text" value="曹顺淼" size="25"
-                               maxlength="15" readonly="readonly" style="background-color: rgb(238, 238, 238);"></td>
-
-                </tr>
-
-
-                <tr>
-                    <td class="right_txt_self">
-                        <label>使用余额自动购买上周期套餐:</label>
-                    </td>
-                    <td colspan="3">
-                        <input id="isAutoBuyPackage1" name="isAutoBuyPackage" class="wb_mod" data-toggle="switch"
-                               type="checkbox" value="true"><input type="hidden" name="_isAutoBuyPackage" value="on">
-                    </td>
-                </tr>
-
-
-                </tbody>
-            </table>
-            <div class="text_center">
-                <button name="updateUserBasicInfoBtn" id="updateUserBasicInfoBtn" type="button" class="mod_but_b">
-                    确认修改
-                </button>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <!--用户信息-->
+                <form class="layui-form" action="" id="EditInfo">
+                    <table class="repair_self" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr>
+                            <td class="right_txt_self">
+                                <label>名字:</label>
+                            </td>
+                            <td>
+                                <input id="t_name" name="t_no" class="repair_input" type="text"
+                                       value="<%- teacher.t_name %>" disabled="disabled"
+                                       size="25" maxlength="32">
+                            </td>
+                            <td class="right_txt_self">
+                                <label>工号</label>
+                            </td>
+                            <td>
+                                <input id="t_no" name="t_no" class="repair_input" type="text"
+                                       value="<%- teacher.t_no %>"
+                                       disabled="disabled"
+                                       size="25" maxlength="32">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="right_txt_self">
+                                <label>个人签名</label>
+                            </td>
+                            <td colspan="3">
+                                    <textarea name="desc" required lay-verify="required" class="layui-textarea">
+                                        <%- teacher.desc %>
+                                    </textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text_center">
+                        <button class="layui-btn" lay-submit lay-filter="EditInfo">确认修改</button>
+                    </div>
+                </form>
             </div>
-        </div>
-        <!--终端绑定信息-->
-        <div id="user_terminal_binding_info" style="display: none;">
-            <table border="0" cellspacing="0" cellpadding="0" class="user_live_tabel" id="bindingTable">
-                <tbody>
-                <tr class="nohover">
-                    <th>终端类型</th>
-                    <th>用户名</th>
-                    <th>设备别名</th>
-                    <th>设备ID</th>
-                    <th>绑定时间</th>
-                    <th>解绑时间</th>
-                    <th>操作</th>
-                </tr>
-
-
-                <input id="showFlag" type="hidden" value="">
-                </tbody>
-            </table>
-            <ul class="page_box" style="height: 40px;">
-                <li class="page_box_on"><a href="javascript:void(0);">1</a></li>
-                <li>共1页</li>
-            </ul>
-            <input type="hidden" name="currentPageNumber">
-            <script type="text/javascript">function gotoPageNumber(pageNumber) {
-                    document.userForm.currentPageNumber.value = pageNumber;
-                    document.userForm.action = "/z-os/self/user/findPageInfo";
-                    document.userForm.submit();
-                }</script>
-
-        </div>
-
-        <div id="user_mac_binding_info" style="display: none;">
-            <table border="0" cellspacing="0" cellpadding="0" class="user_live_tabel" id="macTable">
-                <tbody>
-                <tr class="nohover">
-                    <th>绑定用户</th>
-                    <th>绑定MAC</th>
-                    <th> 有效期</th>
-                    <th>操作人</th>
-                    <th> 绑定时间</th>
-                    <th>操作</th>
-                </tr>
-
-                <input id="showMac" type="hidden" value="">
-                </tbody>
-            </table>
-            <ul class="page_box" style="height: 40px;">
-                <li class="page_box_on"><a href="javascript:void(0);">1</a></li>
-                <li>共1页</li>
-            </ul>
-            <input type="hidden" name="currentPageNumber">
-            <script type="text/javascript">function gotoPageNumber(pageNumber) {
-                    document.userForm2.currentPageNumber.value = pageNumber;
-                    document.userForm2.action = "/z-os/self/user/findMacInfo";
-                    document.userForm2.submit();
-                }</script>
-
-
-        </div>
-        <!--修改密码-->
-        <div id="user_password_info" style="display: none;">
-            <table class="repair_self width50" border="0" cellspacing="0" cellpadding="0">
-                <tbody>
-                <tr>
-                    <td class="right_txt_self">原密码</td>
-                    <td><input name="originalPassWord" id="originalPassWord" type="password" class="repair_input"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="right_txt_self">新密码</td>
-                    <td>
-                        <input name="passWord" id="passWord" type="password" class="repair_input password_rule_tip">
-                    </td>
-
-                </tr>
-                <tr>
-                    <td class="right_txt_self">确认新密码</td>
-                    <td><input name="confirmPassword" id="confirmPassword" type="password" class="repair_input"></td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="text_center">
-                <button name="updateUserPwdInfoBtn" id="updateUserPwdInfoBtn" type="button" class="mod_but_b">
-                    确认修改
-                </button>
+            <div class="layui-tab-item">
+                <!--修改密码-->
+                <div>
+                    <form id="EditPwd">
+                        <table class="repair_self width50" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td class="right_txt_self">原密码</td>
+                                <td><input name="originalPassWord" id="originalPassWord" type="password"
+                                           class="repair_input">
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="right_txt_self">新密码</td>
+                                <td>
+                                    <input name="passWord" id="passWord" type="password"
+                                           class="repair_input password_rule_tip">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="right_txt_self">确认新密码</td>
+                                <td><input name="confirmPassword" id="confirmPassword" type="password"
+                                           class="repair_input">
+                                </td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text_center">
+                            <button class="layui-btn" lay-submit lay-filter="EditPwd">确认修改</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-
-        <div class="login_copy">狗腿子有限公司 版权所有保留一切权利
         </div>
     </div>
-</form>
+    <div class="login_copy">狗腿子有限公司 版权所有保留一切权利
+    </div>
+</div>
 </body>
+
+<script src="/layui-v2.6.8/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form;
+
+        form.on('submit(EditInfo)', function () {
+            let data = $('#EditInfo').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/Teacher/EditInfo',
+                data: data,
+                success: function (res) {
+                    layer.msg(res.msg);
+                    if (res.code === 200) {
+                        window.location.href = '/';
+                    }
+                }
+            })
+            return false;
+        })
+        form.on('submit(EditPwd)', function () {
+            let data = $('#EditPwd').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/Teacher/EditPwd',
+                data: data,
+                success: function (res) {
+                    layer.msg(res.msg);
+                    if (res.code === 200) {
+                        window.location.href = '/';
+                    }
+                }
+            })
+            return false;
+        })
+    });
+</script>
+
 </html>

@@ -19,55 +19,11 @@
     <script src="/Js/WdatePicker.js"></script>
     <link href="/Css/WdatePicker.css" rel="stylesheet" type="text/css">
     <link href="/Css/zoc_self.css" rel="stylesheet" type="text/css">
+    <link href="/layui-v2.6.8/layui/css/layui.css" type="text/css" rel="stylesheet">
     <script type="text/javascript">
         $(document).ready(function () {
             $("#Teacher_CourseSelect").addClass("menu_hov");
         });
-        var DATE_FORMAT = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
-
-        function judegeDate(timeStart, timeEnd) {
-            var result1 = true;
-            var result2 = true;
-            if (timeStart != "" && !DATE_FORMAT.test(timeStart)) {
-                result1 = false;
-            } else if (timeStart != "") {
-                var r = timeStart.match(DATE_FORMAT);
-                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
-                result1 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
-            }
-            if (timeEnd != "" && !DATE_FORMAT.test(timeEnd)) {
-                result2 = false;
-            } else if (timeEnd != "") {
-                var r = timeEnd.match(DATE_FORMAT);
-                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
-                result2 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
-            }
-            return (result1 && result2);
-        }
-
-        function query() {
-            var timeStart = $("#startDate").val();
-            var timeEnd = $("#endDate").val();
-            var judge = true;
-            judge = judegeDate(timeStart, timeEnd);
-            if (judge == true) {
-                $("#dateIsFault").hide();
-                if (timeStart != "" && timeEnd != "") {
-                    if (compareDate(timeStart, timeEnd)) {
-                        document.accountsFlowForm.action = "/z-os/self/getAccountsFlow";
-                        document.accountsFlowForm.submit();
-                        $("#endGTStart").hide();
-                    } else {
-                        $("#endGTStart").show();
-                    }
-                } else {
-                    document.accountsFlowForm.action = "/z-os/self/getAccountsFlow";
-                    document.accountsFlowForm.submit();
-                }
-            } else {
-                $("#dateIsFault").show();
-            }
-        }
     </script>
     <style>
         <!--
@@ -169,23 +125,6 @@
 <%- include('./Head.ejs'); %>
 <form name="accountsFlowForm" method="post">
     <div class="mod_box" style="padding-top: 0px;">
-        <div class="user_live">
-            <div class="R time_but">
-                <b>记账时间：</b>
-                <input id="startDate" name="startDate" value="" type="text" class="text_mod_border">
-                至
-                <input id="endDate" name="endDate" value="" type="text" class="text_mod_border">
-                <button onclick="query(); return false;" class="text_mod_button">
-                    查询
-                </button>
-                <span class="errMsg" style="color:red;display:none;" id="endGTStart">
-						  查询开始时间不能大于查询截止时间
-				 </span>
-                <span class="errMsg" style="color:red;display:none;" id="dateIsFault">
-				  时间格式不正确
-				 </span>
-            </div>
-        </div>
         <table border="0" cellspacing="0" cellpadding="0" class="user_live_tabel ">
             <tbody>
             <tr class="nohover">
@@ -203,9 +142,13 @@
                     <td><%- i.c_no %></td>
                     <td>
                         <% if(i.t_id == teacher.t_id) { %>
-                            <a href="/Teacher/DropClass?C_id=<%- i.c_id %>">我要退课</a>
+                            <button type="button" class="layui-btn layui-btn-primary layui-border-red"
+                                    href="javascript:void(0)" onclick="DropClass(<%- i.pcl_id %>)">我要退课
+                            </button>
                         <% } else { %>
-                            <a href="/Teacher/AddClass?C_id=<%- i.c_id %>">我要上课</a>
+                            <button type="button" class="layui-btn layui-btn-primary layui-border-green"
+                                    href="javascript:void(0)" onclick="AddClass(<%- i.pcl_id %>)">我要上课
+                            </button>
                         <% } %>
                     </td>
                 </tr>
@@ -219,4 +162,26 @@
 </body>
 <div id="screen-shader"
      style="            transition: opacity 0.1s ease 0s;             z-index: 2147483647;            margin: 0;             border-radius: 0;             padding: 0;             background: #939393 !important;             pointer-events: none;             position: fixed;             top: -10%;             right: -10%;             width: 120%;             height: 120%;             opacity: 0.6000;            mix-blend-mode: multiply;             display: none;        "></div>
+
+
+<script src="/layui-v2.6.8/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['layer'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+        window.DropClass = function (pcl_id) {
+            $.get('/Teacher/DropClass?pcl_id=' + pcl_id,
+                function (res) {
+                    layer.msg(res);
+                    window.location.reload();
+                });
+        }
+        window.AddClass = function (pcl_id) {
+            $.get('/Teacher/AddClass?pcl_id=' + pcl_id,
+                function (res) {
+                    layer.msg(res);
+                    window.location.reload();
+                })
+        }
+    });
+</script>
 </html>
