@@ -1,0 +1,20 @@
+.tipso_bubble,.tipso_bubble>.tipso_arrow{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.tipso_bubble{position:absolute;text-align:center;border-radius:6px;z-index:999999;padding:10px}.tipso_style{cursor:help;border-bottom:1px dotted}.tipso_bubble>.tipso_arrow{position:absolute;width:0;height:0;border:8px solid;pointer-events:none}.tipso_bubble.tipso-top>.tipso_arrow{border-color:#000 transparent transparent;top:100%;left:50%;margin-left:-8px}.tipso_bubble.tipso-bottom>.tipso_arrow{border-color:transparent transparent #000;bottom:100%;left:50%;margin-left:-8px}.tipso_bubble.tipso-left>.tipso_arrow{border-color:transparent transparent transparent #000;top:50%;left:100%;margin-top:-8px}.tipso_bubble.tipso-right>.tipso_arrow{border-color:transparent #000 transparent transparent;top:50%;right:100%;margin-top:-8px}
+
+.password_rue_tip{
+    text-align: left;
+    font-size: 14px;
+}
+.password_rue_tip tr{
+    margin: 30px 0;
+}
+
+.password_rue_tip .input_icon{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.tipso_bubble,.tipso_arrow{
+    border: 1px grey solid;
+}
+

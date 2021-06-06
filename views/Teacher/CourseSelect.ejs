@@ -1,0 +1,222 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>教师选课</title>
+    <link type="image/x-icon" href="http://210.31.176.3:8080/z-os/img/favicon.ico" rel="icon">
+    <link type="image/x-icon" href="http://210.31.176.3:8080/z-os/img/favicon.ico" rel="shortcut icon">
+    <script src="/Js/jquery-1.10.2.min.js"></script>
+    <script src="/Js/bootstrap.min.js"></script>
+    <script src="/Js/bootstrap-table.js"></script>
+    <script src="/Js/bootstrap-switch.js"></script>
+    <script src="/Js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="/Js/common-validator.js"></script>
+    <script src="/Js/md5-min.js"></script>
+    <script src="/Js/toastr.js"></script>
+    <link href="/Css/toastr.min.css" rel="stylesheet">
+    <script src="/Js/tipso.js"></script>
+    <link href="/Css/tipso.min.css" rel="stylesheet">
+    <script src="/Js/WdatePicker.js"></script>
+    <link href="/Css/WdatePicker.css" rel="stylesheet" type="text/css">
+    <link href="/Css/zoc_self.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Teacher_CourseSelect").addClass("menu_hov");
+        });
+        var DATE_FORMAT = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+
+        function judegeDate(timeStart, timeEnd) {
+            var result1 = true;
+            var result2 = true;
+            if (timeStart != "" && !DATE_FORMAT.test(timeStart)) {
+                result1 = false;
+            } else if (timeStart != "") {
+                var r = timeStart.match(DATE_FORMAT);
+                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
+                result1 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
+            }
+            if (timeEnd != "" && !DATE_FORMAT.test(timeEnd)) {
+                result2 = false;
+            } else if (timeEnd != "") {
+                var r = timeEnd.match(DATE_FORMAT);
+                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
+                result2 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
+            }
+            return (result1 && result2);
+        }
+
+        function query() {
+            var timeStart = $("#startDate").val();
+            var timeEnd = $("#endDate").val();
+            var judge = true;
+            judge = judegeDate(timeStart, timeEnd);
+            if (judge == true) {
+                $("#dateIsFault").hide();
+                if (timeStart != "" && timeEnd != "") {
+                    if (compareDate(timeStart, timeEnd)) {
+                        document.accountsFlowForm.action = "/z-os/self/getAccountsFlow";
+                        document.accountsFlowForm.submit();
+                        $("#endGTStart").hide();
+                    } else {
+                        $("#endGTStart").show();
+                    }
+                } else {
+                    document.accountsFlowForm.action = "/z-os/self/getAccountsFlow";
+                    document.accountsFlowForm.submit();
+                }
+            } else {
+                $("#dateIsFault").show();
+            }
+        }
+    </script>
+    <style>
+        <!--
+        .top_menu_pc {
+            float: right;
+        }
+
+        .top_menu_pc ul li {
+            float: left;
+            text-align: center;
+        }
+
+        .top_menu_pc ul li a {
+            height: 80px;
+            display: block;
+            color: #555;
+            font-size: 14px;
+            width: 90px;
+            text-decoration: none;
+        }
+
+        .top_menu_pc ul li a:hover, .menu_hov a {
+        }
+
+        .menu_znms {
+            font-size: 0;
+        }
+
+        .menu_znms li {
+            position: relative;
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            font-size: 14px;
+        }
+
+        .menu_znms > li {
+            margin: 0 0 0 -1px;
+            text-align: center;
+        }
+
+        .menu_znms li a {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            *display: inline;
+            *zoom: 1;
+        }
+
+        .menu_znms li a:hover, .menu_znms .menu_hov {
+
+        }
+
+        .menu_znms li ul {
+            text-align: left;
+            position: absolute;
+            border-bottom: 0px solid #189;
+            color: #189 !important;
+        }
+
+        .menu_znms_ie7 {
+            *top: 50px;
+            *left: 0;
+        }
+
+        .menu_znms li ul li {
+            width: 90px;
+            height: 35px;
+            line-height: 35px;
+            display: block;
+            border-bottom: 0px solid #189;
+        }
+
+        .menu_znms li ul li a {
+            display: block;
+        }
+
+        .menu_znms li ul li a:hover {
+            /* border-bottom: 5px solid #189 !important;
+            color: #189 !important;  */
+        }
+
+        .menu_znms li ul li ul {
+            margin: 1px 0 0 0;
+        }
+
+        .menu_znms li ul li ul li a {
+            display: block;
+        }
+
+        .height_pc {
+            height: 35px !important;
+        }
+
+        -->
+    </style>
+</head>
+<body style="">
+<%- include('./Head.ejs'); %>
+<form name="accountsFlowForm" method="post">
+    <div class="mod_box" style="padding-top: 0px;">
+        <div class="user_live">
+            <div class="R time_but">
+                <b>记账时间：</b>
+                <input id="startDate" name="startDate" value="" type="text" class="text_mod_border">
+                至
+                <input id="endDate" name="endDate" value="" type="text" class="text_mod_border">
+                <button onclick="query(); return false;" class="text_mod_button">
+                    查询
+                </button>
+                <span class="errMsg" style="color:red;display:none;" id="endGTStart">
+						  查询开始时间不能大于查询截止时间
+				 </span>
+                <span class="errMsg" style="color:red;display:none;" id="dateIsFault">
+				  时间格式不正确
+				 </span>
+            </div>
+        </div>
+        <table border="0" cellspacing="0" cellpadding="0" class="user_live_tabel ">
+            <tbody>
+            <tr class="nohover">
+                <th>课程名</th>
+                <th>学分</th>
+                <th>课程类型</th>
+                <th>课号</th>
+                <th>操作</th>
+            </tr>
+            <% stuClass.forEach(function(i){ %>
+                <tr>
+                    <td><%- i.c_name %></td>
+                    <td><%- i.credit %></td>
+                    <td><%- i.cc_name %></td>
+                    <td><%- i.c_no %></td>
+                    <td>
+                        <% if(i.t_id == teacher.t_id) { %>
+                            <a href="/Teacher/DropClass?C_id=<%- i.c_id %>">我要退课</a>
+                        <% } else { %>
+                            <a href="/Teacher/AddClass?C_id=<%- i.c_id %>">我要上课</a>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }); %>
+        </table>
+    </div>
+</form>
+
+<div class="login_copy">狗腿子有限公司 版权所有保留一切权利
+</div>
+</body>
+<div id="screen-shader"
+     style="            transition: opacity 0.1s ease 0s;             z-index: 2147483647;            margin: 0;             border-radius: 0;             padding: 0;             background: #939393 !important;             pointer-events: none;             position: fixed;             top: -10%;             right: -10%;             width: 120%;             height: 120%;             opacity: 0.6000;            mix-blend-mode: multiply;             display: none;        "></div>
+</html>

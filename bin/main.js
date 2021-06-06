@@ -80,7 +80,7 @@ app.post('/login', function (req, res, next) {
         }
         let query = conn.query('select * from admin where a_name = ? && a_pwd = ? limit 1',
             [username, password],
-            function (err, rows ) {
+            function (err, rows) {
                 if (err) {
                     console.log(err);
                     return next("Error");
