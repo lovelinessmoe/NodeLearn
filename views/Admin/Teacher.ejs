@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>教师页面</title>
+    <link type="image/x-icon" href="http://210.31.176.3:8080/z-os/img/favicon.ico" rel="icon">
+    <link type="image/x-icon" href="http://210.31.176.3:8080/z-os/img/favicon.ico" rel="shortcut icon">
+    <script src="../Static/Js/jquery-1.10.2.min.js"></script>
+    <script src="../Static/Js/bootstrap.min.js"></script>
+    <script src="../Static/Js/bootstrap-table.js"></script>
+    <script src="../Static/Js/bootstrap-switch.js"></script>
+    <script src="../Static/Js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="../Static/Js/common-validator.js"></script>
+    <script src="../Static/Js/md5-min.js"></script>
+    <script src="../Static/Js/toastr.js"></script>
+    <link href="../Static/Css/toastr.min.css" rel="stylesheet">
+    <script src="../Static/Js/tipso.js"></script>
+    <link href="../Static/Css/tipso.min.css" rel="stylesheet">
+    <script src="../Static/Js/WdatePicker.js"></script>
+    <link href="../Static/Css/WdatePicker.css" rel="stylesheet" type="text/css">
+    <link href="../Static/Css/zoc_self.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        var BUY_PACKAGE_URL = "/z-os/self/buyPackage/html";
+        $(document).ready(function () {
+            $("#self_buyPackageRecord").addClass("menu_hov");
+        });
+        var DATE_FORMAT = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+
+        function judegeDate(timeStart, timeEnd) {
+            var result1 = true;
+            var result2 = true;
+            if (timeStart != "" && !DATE_FORMAT.test(timeStart)) {
+                result1 = false;
+            } else if (timeStart != "") {
+                var r = timeStart.match(DATE_FORMAT);
+                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
+                result1 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
+            }
+            if (timeEnd != "" && !DATE_FORMAT.test(timeEnd)) {
+                result2 = false;
+            } else if (timeEnd != "") {
+                var r = timeEnd.match(DATE_FORMAT);
+                var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
+                result2 = (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
+            }
+            return (result1 && result2);
+        }
+
+        function query() {
+            var timeStart = $("#startDate").val();
+            var timeEnd = $("#endDate").val();
+            var judge = true;
+            judge = judegeDate(timeStart, timeEnd);
+            if (judge == true) {
+                $("#dateIsFault").hide();
+                if (timeStart != "" && timeEnd != "") {
+                    if (compareDate(timeStart, timeEnd)) {
+                        document.buyPackageRecordForm.action = "/z-os/self/buyPackageRecord";
+                        document.buyPackageRecordForm.currentPageNumber.value = 1;
+                        document.buyPackageRecordForm.submit();
+                        $("#endGTStart").hide();
+                    } else {
+                        $("#endGTStart").show();
+                    }
+                } else {
+                    document.buyPackageRecordForm.action = "/z-os/self/buyPackageRecord";
+                    document.buyPackageRecordForm.currentPageNumber.value = 1;
+                    document.buyPackageRecordForm.submit();
+                }
+            } else {
+                $("#dateIsFault").show();
+            }
+
+        }
+
+
+        //购买套餐
+        function buyPackage(userUuid) {
+            $.ajax({
+                type: 'post',
+                url: BUY_PACKAGE_URL + "?timestamp=" + new Date().getTime(),
+                data: {"uniqueId": userUuid},
+                dataType: 'html',
+                success: function (data) {
+                    $("#buy_package_div").html(data);
+                    $("#buy_package_div_basic").css("display", "table");
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    toastr.error(XMLHttpRequest + "=" + textStatus + "=" + errorThrown, "系统提示");
+                }
+            });
+        }
+
+        function closeNewDiv(divId) {
+            $("#" + divId).css("display", "none");
+        }
+
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var leftMenu = $(".menu_znms").find("li");
+            var ishas = false;
+            leftMenu.each(function () {
+                var subMenu = $(this).children("ul");
+                //console.log(subMenu.context.id);
+                if ("self_internetMng" != subMenu.context.id) {
+                    if ($(this).hasClass("menu_hov")) {
+                        ishas = true;
+                    }
+                }
+            });
+
+            leftMenu.each(function () {
+                var subMenu = $(this).children("ul");
+                if ("self_internetMng" == subMenu.context.id) {
+                    if (ishas) {
+                        $(this).hover(function () {
+                            $(this).removeClass("menu_hov");
+                            subMenu.stop(true, true).show();
+                        });
+                        $(this).mouseleave(function () {
+                            $(this).removeClass("menu_hov");
+                            subMenu.stop(true, true).hide();
+                        });
+                    } else {
+                        $(this).hover(function () {
+                            //$(this).addClass("menu_hov");
+                            $(this).removeClass("menu_hov");
+                            subMenu.stop(true, true).show();
+                        });
+                        $(this).mouseleave(function () {
+                            //$(this).removeClass("menu_hov");
+                            $(this).addClass("menu_hov");
+                            subMenu.stop(true, true).hide();
+                        });
+                    }
+                }
+            });
+        });
+
+    </script>
+    <style>
+        <!--
+        .top_menu_pc {
+            float: right;
+        }
+
+        .top_menu_pc ul li {
+            float: left;
+            text-align: center;
+        }
+
+        .top_menu_pc ul li a {
+            height: 80px;
+            display: block;
+            color: #555;
+            font-size: 14px;
+            width: 90px;
+            text-decoration: none;
+        }
+
+        .top_menu_pc ul li a:hover, .menu_hov a {
+        }
+
+        .menu_znms {
+            font-size: 0;
+        }
+
+        .menu_znms li {
+            position: relative;
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            font-size: 14px;
+        }
+
+        .menu_znms > li {
+            margin: 0 0 0 -1px;
+            text-align: center;
+        }
+
+        .menu_znms li a {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            *display: inline;
+            *zoom: 1;
+        }
+
+        .menu_znms li a:hover, .menu_znms .menu_hov {
+
+        }
+
+        .menu_znms li ul {
+            text-align: left;
+            position: absolute;
+            border-bottom: 0px solid #189;
+            color: #189 !important;
+        }
+
+        .menu_znms_ie7 {
+            *top: 50px;
+            *left: 0;
+        }
+
+        .menu_znms li ul li {
+            width: 90px;
+            height: 35px;
+            line-height: 35px;
+            display: block;
+            border-bottom: 0px solid #189;
+        }
+
+        .menu_znms li ul li a {
+            display: block;
+        }
+
+        .menu_znms li ul li a:hover {
+            /* border-bottom: 5px solid #189 !important;
+            color: #189 !important;  */
+        }
+
+        .menu_znms li ul li ul {
+            margin: 1px 0 0 0;
+        }
+
+        .menu_znms li ul li ul li a {
+            display: block;
+        }
+
+        .height_pc {
+            height: 35px !important;
+        }
+
+        -->
+    </style>
+
+</head>
+<div id="screen-shader"
+     style="            transition: opacity 0.1s ease 0s;             z-index: 2147483647;            margin: 0;             border-radius: 0;             padding: 0;             background: #939393 !important;             pointer-events: none;             position: fixed;             top: -10%;             right: -10%;             width: 120%;             height: 120%;             opacity: 0.6000;            mix-blend-mode: multiply;             display: none;        "></div>
+<body style="">
+<div class="mod_top">
+    <div class="top_logo"><a href="http://210.31.176.3:8080/z-os/self/buyPackageRecord#"></a></div>
+    <div class="top_menu_pc">
+        <ul class="menu_znms">
+            <li id="self_main"><a href="http://210.31.176.3:8080/z-os/self/main">首页</a></li>
+            <!-- <li id="self_buyPackageRecord" class="menu_hov"><a
+                     href="http://210.31.176.3:8080/z-os/self/buyPackageRecord">教师</a></li> -->
+            <!--    <li id="self_getAccountsFlow"><a href="http://210.31.176.3:8080/z-os/self/getAccountsFlow">账务流水</a></li> -->
+            <li id="self_internetMng">
+                <a href="http://210.31.176.3:8080/z-os/self/buyPackageRecord#">教师</a>
+                <ul style="display: none" class="menu_znms_ie7">
+                    <li id="self_internetRecord"><a href="http://210.31.176.3:8080/z-os/self/internetRecord"
+                                                    class="height_pc">教师排课</a></li>
+                    <li id="self_gatewayFlow"><a href="http://210.31.176.3:8080/z-os/self/gatewayFlow"
+                                                 class="height_pc">教师页面</a></li>
+                </ul>
+            </li>
+            <li id="self_userBalanceRecord"><a href="http://210.31.176.3:8080/z-os/self/userBalanceRecord">记录</a></li>
+            <li id="li_userInfo_set"><a href="http://210.31.176.3:8080/z-os/self/user">个人设置</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<script src="../Static/Js/user_list.js"></script>
+
+<div class="layer_box" style="display:none;" id="buy_package_div_basic">
+    <div class="layer_content">
+        <div class=" layer_content_box">
+            <h1>
+                <span id="titleSpan">购买套餐</span>
+            </h1>
+            <i class="close_icon" onclick="closeNewDiv(&#39;buy_package_div_basic&#39;)"></i>
+            <div class="search_hov_box" id="buy_package_div">
+
+            </div>
+        </div>
+    </div>
+    <div class="layer_bg"></div>
+</div>
+
+<form name="buyPackageRecordForm" method="post">
+    <div class="mod_box" style="padding-top: 0px;">
+
+
+        <div class="user_name">
+            <h1 style="margin: 20px 30px; color: #449D44;">老师，欢迎您！</h1>
+            <ul class="user_name_ul">
+
+                <li class="user_name_email" title="邮箱"><i></i>1695560542</li>
+
+
+                <li><a href="http://210.31.176.3:8080/z-os/self/login">&gt;退出账号</a></li>
+            </ul>
+        </div>
+
+        <div class="user_live">
+            <div class="R time_but">
+                <b>排课时间：</b>
+                <input id="startDate" name="startDate" value=""
+                       onfocus="WdatePicker({isShowClear:true,dateFmt:&#39;yyyy-MM-dd HH:mm:ss&#39;})" type="text"
+                       class="text_mod_border">
+                至
+                <input id="endDate" name="endDate" value=""
+                       onfocus="WdatePicker({isShowClear:true,dateFmt:&#39;yyyy-MM-dd HH:mm:ss&#39;})" type="text"
+                       class="text_mod_border">
+                <button onclick="query(); return false;" class="text_mod_button">
+                    查询
+                </button>
+
+                <!--   <button onclick="buyPackage(&#39;8a8092786ce0a402016d13ecf0613a80&#39;); return false;"
+                           class="text_mod_button">
+                       购买
+                   </button> -->
+
+
+                <span class="errMsg" style="color:red;display:none;" id="endGTStart">
+						  查询开始时间不能大于查询截止时间
+				 </span>
+                <span class="errMsg" style="color:red;display:none;" id="dateIsFault">
+				  时间格式不正确
+				 </span>
+            </div>
+        </div>
+
+        <table border="0" cellspacing="0" cellpadding="0" class="user_live_tabel ">
+            <tbody>
+            <tr>
+                <th>教师工号</th>
+                <th>教师名称</th>
+                <th>教师账号</th>
+                <th>教师密码</th>
+                <th>教师职称</th>
+            </tr>
+            <tr>
+                <td><span class="color_189">1</span></td>
+                <td>
+                    澈力木格
+                </td>
+                <td>
+                    20104564
+                </td>
+                <td>
+                    111111
+                </td>
+                <td>
+                    老师
+                </td>
+            </tr>
+            <tr>
+                <td><span class="color_189">2</span></td>
+                <td>
+                    贺文
+                </td>
+                <td>
+                    20210606
+                </td>
+                <td>
+                    222
+                </td>
+                <td>
+                    院长
+                </td>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <ul class="page_box" style="height: 40px;">
+        <li class="page_box_on"><a href="javascript:void(0);">1</a></li>
+        <li>共1页</li>
+    </ul>
+    <input type="hidden" name="currentPageNumber">
+    <script type="text/javascript">function gotoPageNumber(pageNumber) {
+            document.buyPackageRecordForm.currentPageNumber.value = pageNumber;
+            document.buyPackageRecordForm.action = "/z-os/self/buyPackageRecord";
+            document.buyPackageRecordForm.submit();
+        }</script>
+
+</form>
+
+<div class="login_copy">狗腿子组 版权所有保留一切权利
+</div>
+</body>
+</html>

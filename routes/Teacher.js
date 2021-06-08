@@ -4,6 +4,12 @@ var router = express.Router();
 var db = require('../module/database');
 conn = db.connection;
 
+/**
+ * 跳转到老师的index
+ * @param req
+ * @param res
+ * @param next
+ */
 function index(req, res, next) {
     let t_id = req.session.teacherinfo.t_id;
     sql = "SELECT pcl.pcl_id,c.c_id,c.c_name,c.credit,cc.cc_name,c.c_no FROM plan_course_list AS pcl LEFT JOIN course AS c ON pcl.c_id=c.c_id LEFT JOIN course_cate AS cc ON cc.cc_id=c.cc_id WHERE pcl.t_id=1 AND pcl.pcl_status=1";
@@ -18,6 +24,10 @@ function index(req, res, next) {
 }
 
 
+/**
+ * 过滤没有登陆的用户
+ * 跳转到login
+ */
 router.get('*', function (req, res, next) {
     if (!req.session.teacherinfo) {
         res.redirect('/');
@@ -28,6 +38,10 @@ router.get('*', function (req, res, next) {
 
 router.get('/', index);
 router.get('/index', index);
+
+/**
+ * 选课界面
+ */
 router.get('/CourseSelect', function (req, res) {
     let t_id = req.session.teacherinfo.t_id;
     sql = "SELECT pcl.pcl_id,c.c_id,c.c_name,c.credit,cc.cc_name,c.c_no,pcl.t_id FROM plan_course_list AS pcl LEFT JOIN course AS c ON pcl.c_id=c.c_id LEFT JOIN course_cate AS cc ON cc.cc_id=c.cc_id";
@@ -40,10 +54,18 @@ router.get('/CourseSelect', function (req, res) {
                 });
         })
 })
+
+/**
+ * 用户修改界面
+ */
 router.get('/User', function (req, res) {
     res.render('Teacher/User', {teacher: req.session.teacherinfo})
 })
 
+/**
+ * 退课
+ * @param pcl_id 选课计划的ID
+ */
 router.get('/DropClass', function (req, res) {
     let pcl_id = req.query.pcl_id;
     let sql = "UPDATE plan_course_list SET t_id = 0 , pcl_status = 0 WHERE pcl_id = ?";
@@ -60,6 +82,11 @@ router.get('/DropClass', function (req, res) {
         res.send(e);
     }
 })
+
+/**
+ * 选课
+ * 更新教师ID和状态
+ */
 router.get('/AddClass', function (req, res) {
     let pcl_id = req.query.pcl_id;
     let t_id = req.session.teacherinfo.t_id;
@@ -77,6 +104,10 @@ router.get('/AddClass', function (req, res) {
         res.send(e);
     }
 })
+/**
+ * 修改信息
+ * 只能修改DESC
+ */
 router.post('/EditInfo', function (req, res) {
     let desc = req.body.desc;
     let t_id = req.session.teacherinfo.t_id;
@@ -95,6 +126,12 @@ router.post('/EditInfo', function (req, res) {
         res.send(e);
     }
 })
+/**
+ * 修改密码
+ * @param originalPassWord 愿密码
+ * @param passWord 修改的密码
+ * @param confirmPassword 确认的密码
+ */
 router.post('/EditPwd', function (req, res) {
     let t_id = req.session.teacherinfo.t_id;
 
@@ -105,7 +142,6 @@ router.post('/EditPwd', function (req, res) {
     console.log(originalPassWord + ":" + passWord + ":" + confirmPassword);
     console.log("data");
     let PWD = req.session.PWD;
-
 
     if (passWord === confirmPassword) {
         if (originalPassWord === PWD) {

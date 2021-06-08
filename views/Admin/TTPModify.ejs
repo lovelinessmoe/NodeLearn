@@ -1,0 +1,128 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <link href="/layui-v2.6.8/layui/css/layui.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<form class="layui-form layuimini-form" onsubmit="return false">
+    <div class="layui-card">
+        <div class="layui-card-body layui-form">
+            <input hidden="hidden" name="ttp_id" value="<%- TTP.ttp_id %>">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label required">培养方案</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="ttp_title" name="ttp_title" lay-verify="required"
+                               lay-reqtext="培养方案名称不能为空"
+                               placeholder="请输入培养方案名称"
+                               value="<%- TTP.ttp_title %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label ">所用年份</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <select name="ttp_year" id="ttp_year" lay-verify="required" lay-reqtext="所用年份不能为空"
+                                lay-filter="Year_filter">
+                            <option value="">请选择一个年份</option>
+                            <option value="2019"
+                            <% if (TTP.ttp_year == '2019'){ %>
+                                    selected="selected"
+                                    <% } %>
+                            >2019
+                            </option>
+                            <option value="2020"
+
+                            <% if (TTP.ttp_year == '2020'){ %>
+                                    selected="selected"
+                                    <% } %>
+                            >2020
+                            </option>
+                            <option value="2021"
+
+                            <% if (TTP.ttp_year == '2021'){ %>
+                                    selected="selected"
+                                    <% } %>
+                            >2021
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label required">公共必修</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="ggBiXiu_credit" name="ggBiXiu_credit" lay-verify="required"
+                               lay-reqtext="公共必修学分不能为空"
+                               placeholder="请输入公共必修学分"
+                               value="<%- TTP.ggBiXiu_credit %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label required">专业必修</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="zyBiXiu_credit" name="zyBiXiu_credit" lay-verify="required"
+                               lay-reqtext="专业必修学分不能为空"
+                               placeholder="请输入专业必修学分"
+                               value="<%- TTP.zyBiXiu_credit %>"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label required">通识选修</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="tsXuanXiu_credit" name="tsXuanXiu_credit" lay-verify="required"
+                               lay-reqtext="通识选修学分不能为空"
+                               placeholder="请输入通识选修学分"
+                               value="<%- TTP.tsXuanXiu_credit %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label required">专业选修</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="zyXuanXiu_credit" name="zyXuanXiu_credit" lay-verify="required"
+                               lay-reqtext="专业选修学分不能为空"
+                               placeholder="请输入专业选修学分"
+                               value="<%- TTP.zyXuanXiu_credit %>"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="text-align: center;margin: 0 auto">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="ModifyTTP">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+</body>
+<script src="/layui-v2.6.8/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['layer', 'form'], function () {
+        let $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form;
+
+        form.on('submit(ModifyTTP)', function (data) {
+            data = data.field;
+            $.post("/Admin/ModifyTTP", data, function (data) {
+                layer.msg(data.msg);
+                if (data.code === 200) {
+                    window.parent.location.reload();
+                }
+            })
+            return false;
+        })
+    })
+</script>
+</html>
+
