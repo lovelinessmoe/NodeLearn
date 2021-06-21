@@ -1,0 +1,164 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <link href="/layui-v2.6.8/layui/css/layui.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<form class="layui-form layuimini-form" onsubmit="return false">
+    <div class="layui-card">
+        <div class="layui-card-body layui-form">
+            <div class="layui-form-item">
+                <input hidden="hidden" name="ttp_id" value="<%- course.c_id %>">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label required">课程名称</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="course_title" name="course_title" lay-verify="required"
+                               lay-reqtext="课程名称不能为空"
+                               placeholder="请输入课程名称"
+                               value="<%- course.c_name %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label ">对应专业</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <select name="major" id="major" lay-verify="required" lay-reqtext="对应专业不能为空"
+                                lay-filter="major_filter">
+                            <option value="">请选择一个专业</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label required">课号</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="c_no" name="c_no" lay-verify="required"
+                               lay-reqtext="课号不能为空"
+                               placeholder="请输入课号"
+                               value="<%- course.c_no %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label required">培养方案</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <select name="ttp_id" id="ttp" lay-verify="required" lay-reqtext="培养方案不能为空"
+                                lay-filter="major_filter">
+                            <option value="">请选择一个培养方案</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label required">学分</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <input type="text" id="credit" name="credit" lay-verify="required"
+                               lay-reqtext="学分不能为空"
+                               placeholder="请输入学分"
+                               value="<%- course.credit %>"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label required">课程类别</label>
+                    <div class="layui-input-block" style="width: 320px">
+                        <select name="cc_id" id="cc_type" lay-verify="required" lay-reqtext="课程类别不能为空"
+                                lay-filter="major_filter">
+                            <option value="">请选择一个课程类别</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="text-align: center;margin: 0 auto">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="ModifyCourse">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="/layui-v2.6.8/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form;
+
+        /**
+         * 设置select控件选中
+         * @param selectId select的id值
+         * @param checkValue 选中option的值
+         */
+        function set_select_checked(selectId, checkValue) {
+            var select = document.getElementById(selectId);
+
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value == checkValue) {
+                    select.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+        form.on('submit(ModifyCourse)', function (data) {
+            data = data.field;
+            $.post("/Admin/ModifyCourse", data, function (data) {
+                layer.msg(data.msg);
+                if (data.code === 200) {
+                    window.parent.location.reload();
+                }
+            })
+            return false;
+        });
+
+        $.ajax({
+            url: '/Admin/getCCType',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    let id = item.cc_id;
+                    let title = item.cc_name;
+                    $('#cc_type').append(new Option(title, id));
+                    set_select_checked('cc_type',<%- course.cc_id %>)
+                    // 下拉菜单里添加元素
+                });
+            }
+        });
+        $.ajax({
+            url: '/Admin/getTTPid',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    let id = item.ttp_id;
+                    let title = item.ttp_title;
+                    $('#ttp').append(new Option(title, id));
+                    set_select_checked('ttp',<%- course.ttp_id %>)
+                    // 下拉菜单里添加元素
+                });
+            }
+        });
+        $.ajax({
+            url: '/Admin/getMajor',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    let id = item.m_id;
+                    let title = item.m_name;
+                    $('#major').append(new Option(title, id));
+                    set_select_checked('major',<%- course.m_id %>)
+                    // 下拉菜单里添加元素
+                });
+            }
+        });
+        setTimeout("layui.form.render('select');", 500);
+    });
+</script>

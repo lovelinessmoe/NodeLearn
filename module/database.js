@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
     user: 'root',
     password: 'mysql',
     database: 'TeacherManger',
-    debug: true
+    debug: false
 });
 
 connection.connect();

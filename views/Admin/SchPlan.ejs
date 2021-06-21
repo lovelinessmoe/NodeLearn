@@ -142,11 +142,8 @@
 
             <div class="layui-inline">
                 <div class="layui-input-inline">
-                    <select name="ttp_year" id="ttp_year" lay-filter="Role_filter">
+                    <select name="cap_term" id="cap_term" lay-filter="Term_filter">
                         <option value="">请选择一个年份</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
                     </select>
                 </div>
             </div>
@@ -167,41 +164,25 @@
 
         <tbody>
         <tr>
-            <th>培养方案名称</th>
-            <th>所用年份</th>
-            <th>公共必修</th>
-            <th>专业必修</th>
-            <th>通识选修</th>
-            <th>专业选修</th>
+            <th>排课计划名</th>
+            <th>学期</th>
             <th>操作</th>
         </tr>
 
-        <% TTP.forEach(function(i){ %>
+        <% CAP.forEach(function(i){ %>
             <tr>
                 <td>
-                    <a href="/Admin/Course?ttp_id=<%- i.ttp_id %>"><%- i.ttp_title %></a>
+                    <a href="/Admin/Course?ttp_id=<%- i.cap_id %>"><%- i.cap_title %></a>
                 </td>
                 <td>
-                    <%- i.ttp_year %>
-                </td>
-                <td>
-                    <%- i.ggBiXiu_credit %>
-                </td>
-                <td>
-                    <%- i.zyBiXiu_credit %>
-                </td>
-                <td>
-                    <%- i.tsXuanXiu_credit %>
-                </td>
-                <td>
-                    <%- i.zyXuanXiu_credit %>
+                    <%- i.cap_term %>
                 </td>
                 <td>
                     <button type="button" class="layui-btn layui-btn-primary layui-border-green"
-                            href="javascript:void(0)" onclick="ModifyTTP(<%- i.ttp_id %>)">修改
+                            href="javascript:void(0)" onclick="ModifyTTP(<%- i.cap_id %>)">修改
                     </button>
                     <button type="button" class="layui-btn layui-btn-primary layui-border-red"
-                            href="javascript:void(0)" onclick="DeleteTTP(<%- i.ttp_id %>)">删除
+                            href="javascript:void(0)" onclick="DeleteTTP(<%- i.cap_id %>)">删除
                     </button>
                 </td>
             </tr>
@@ -211,7 +192,7 @@
     </table>
 </div>
 
-<div class="login_copy">卓智网络科技有限公司 版权所有保留一切权利
+<div class="login_copy">狗腿子科技有限公司 版权所有保留一切权利
 </div>
 </body>
 <div id="screen-shader"
@@ -223,6 +204,24 @@
         let $ = layui.jquery,
             layer = layui.layer,
             form = layui.form;
+
+
+        /**
+         * 设置select控件选中
+         * @param selectId select的id值
+         * @param checkValue 选中option的值
+         */
+        function set_select_checked(selectId, checkValue) {
+            var select = document.getElementById(selectId);
+
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value == checkValue) {
+                    select.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+
         window.AddTTP = function () {
             layer.open({
                 type: 1,
@@ -252,6 +251,20 @@
             return false;
         }
 
+        $.ajax({
+            url: '/Admin/getCAPTerm',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    let id = item.cap_id;
+                    let title = item.cap_title;
+                    $('#cap_term').append(new Option(title, id));
+                    // 下拉菜单里添加元素
+                });
+            }
+        });
+
 
         form.on('submit(AddTTP)', function (data) {
             $.post("/Admin/AddTTP", data.field, function (data) {
@@ -266,7 +279,7 @@
 
         form.on('submit(LAY-search)', function (data) {
             data = data.field;
-            window.location.href = '/Admin/TTP?ttp_year=' + data.ttp_year + '&search=' + data.search;
+            window.location.href = '/Admin/SchPlan?search=' + data.search + '&cap_term=' + data.cap_term;
         })
 
     });

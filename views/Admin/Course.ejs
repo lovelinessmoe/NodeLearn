@@ -124,9 +124,9 @@
 <body style="">
 <%- include('./Head.ejs'); %>
 <div>
-    <h1 style="text-align: center;margin: 0 auto" style="float: left">当前培养方案是:<%- Course[0].ttp_title %></h1>
+    <h1 style="text-align: center;margin: 0 auto" style="float: left">当前培养方案是:<%- ttp_title[0].ttp_title %></h1>
     <div class=" mod_box">
-        <button class="layui-btn layui-btn-primary" onclick="" style="float: right">添加课程</button>
+        <button class="layui-btn layui-btn-primary" onclick="AddCourse()" style="float: right">添加课程</button>
     </div>
     <div style="clear:both;"></div>
 </div>
@@ -198,7 +198,10 @@
                 <td><%- i.credit %></td>
                 <td>
                     <button type="button" class="layui-btn layui-btn-primary layui-border-green"
-                            href="javascript:void(0)" onclick="AddClass(<%- i.pcl_id %>)">操作
+                            href="javascript:void(0)" onclick="CourseModify(<%- i.c_id %>)">修改
+                    </button>
+                    <button type="button" class="layui-btn layui-btn-primary layui-border-red"
+                            href="javascript:void(0)" onclick="DeleteCourse(<%- i.c_id %>)">删除
                     </button>
                 </td>
             </tr>
@@ -212,8 +215,6 @@
 </body>
 <div id="screen-shader"
      style="            transition: opacity 0.1s ease 0s;             z-index: 2147483647;            margin: 0;             border-radius: 0;             padding: 0;             background: #939393 !important;             pointer-events: none;             position: fixed;             top: -10%;             right: -10%;             width: 120%;             height: 120%;             opacity: 0.6000;            mix-blend-mode: multiply;             display: none;        "></div>
-
-
 <script src="/layui-v2.6.8/layui/layui.js" type="text/javascript"></script>
 <script>
     layui.use(['layer', 'form'], function () {
@@ -221,16 +222,57 @@
             layer = layui.layer,
             form = layui.form;
 
+        form.on('submit(AddCourse)', function (data) {
+            $.post("/Admin/AddCourse", data.field, function (data) {
+                layer.msg(data.msg);
+                if (data.code === 200) {
+                    window.location.reload();
+                }
+            })
+            return false;
+        });
+
+        window.DeleteCourse = function (c_id) {
+            $.post("/Admin/DeleteCourse", {
+                c_id: c_id
+            }, function (data) {
+                layer.msg(data.msg);
+                if (data.code === 200) {
+                    window.location.reload();
+                }
+            })
+            return false;
+        }
+
+        window.CourseModify = function (c_id) {
+            layer.open({
+                type: 2,
+                title: '修改课程',
+                area: ['950px', '350px'],
+                content: '/Admin/CourseModify?c_id=' + c_id
+            });
+        }
+
+
+        window.AddCourse = function () {
+            layer.open({
+                type: 1,
+                title: '添加课程',
+                area: ['950px', '350px'],
+                content: $('#Course')
+            });
+        }
+
         $.ajax({
             url: '/Admin/getCCType',
             dataType: 'json',
             type: 'post',
             success: function (data) {
-                console.log(data);
                 $.each(data, function (index, item) {
                     let id = item.cc_id;
                     let title = item.cc_name;
                     $('#cc_id').append(new Option(title, id));
+                    $('#cc_type').append(new Option(title, id));
                     // 下拉菜单里添加元素
                 });
             }
@@ -240,11 +282,25 @@
             dataType: 'json',
             type: 'post',
             success: function (data) {
-                console.log(data);
                 $.each(data, function (index, item) {
                     let id = item.ttp_id;
                     let title = item.ttp_title;
                     $('#ttp_id').append(new Option(title, id));
+                    $('#ttp').append(new Option(title, id));
+                    // 下拉菜单里添加元素
+                });
+            }
+        });
+        $.ajax({
+            url: '/Admin/getMajor',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, item) {
+                    let id = item.m_id;
+                    let title = item.m_name;
+                    $('#major').append(new Option(title, id));
                     // 下拉菜单里添加元素
                 });
             }
@@ -262,3 +318,77 @@
     });
 </script>
 </html>
+<div hidden="hidden" id="Course">
+    <div class="layui-form layuimini-form">
+        <div class="layui-card">
+            <div class="layui-card-body layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label required">课程名称</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <input type="text" id="course_title" name="course_title" lay-verify="required"
+                                   lay-reqtext="课程名称不能为空"
+                                   placeholder="请输入课程名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label ">对应专业</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <select name="major" id="major" lay-verify="required" lay-reqtext="对应专业不能为空"
+                                    lay-filter="major_filter">
+                                <option value="">请选择一个专业</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label required">课号</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <input type="text" id="c_no" name="c_no" lay-verify="required"
+                                   lay-reqtext="课号不能为空"
+                                   placeholder="请输入课号"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label required">培养方案</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <select name="ttp_id" id="ttp" lay-verify="required" lay-reqtext="培养方案不能为空"
+                                    lay-filter="major_filter">
+                                <option value="">请选择一个培养方案</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label required">学分</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <input type="text" id="credit" name="credit" lay-verify="required"
+                                   lay-reqtext="学分不能为空"
+                                   placeholder="请输入学分"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label required">课程类别</label>
+                        <div class="layui-input-block" style="width: 320px">
+                            <select name="cc_id" id="cc_type" lay-verify="required" lay-reqtext="课程类别不能为空"
+                                    lay-filter="major_filter">
+                                <option value="">请选择一个课程类别</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="text-align: center;margin: 0 auto">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="AddCourse">确认添加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
